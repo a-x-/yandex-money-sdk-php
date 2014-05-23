@@ -196,8 +196,9 @@ class Client
      * @param string $accessToken
      * @param string $to
      * @param float $amount
-     * @param string $comment
-     * @param string $message
+     * @param string $comment - Комментарий к переводу, отображается в истории отправителя.
+     * @param string $message - Комментарий к переводу, отображается получателю.
+     * @param string|null $label
      * @return \YandexMoney\Response\RequestPaymentResponse
      */
     public function requestPaymentP2P($accessToken, $to, $amount, $comment = null, $message = null, $label = null)
