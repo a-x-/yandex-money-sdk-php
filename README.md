@@ -17,10 +17,10 @@
 ### Workflow
 
 Your app asks user to give permissions to manage operations with user's Yandex.Money account. This process is known as
-OAuth authorization. As a result of OAuth your app receives access token from Yandex.Money servers.  
+OAuth authorization. As a result of OAuth your app receives access token from Yandex.Money servers.
 
-Then, with this token your app can make requests to our servers and perform operations with user's account, sometimes even without
-his actual activity.
+Then, with this token your app can make requests to our servers and perform operations with user's account,
+ sometimes even without his actual activity.
 
 ### Code samples
 
@@ -34,9 +34,11 @@ $authUri = YandexMoney::authorizeUri(YOUR_APP_CLIENT_ID, YOUR_APP_REDIRECT_URI, 
 header('Location: ' . $authUri);
 ```
 
-To get more information about permissions scope please visit Yandex.Money [API docs](http://api.yandex.com/money/doc/dg/concepts/protocol-rights.xml).
+To get more information about permissions scope please visit Yandex.Money
+ [API docs](http://api.yandex.com/money/doc/dg/concepts/protocol-rights.xml).
 
-`YOUR_APP_CLIENT_ID` and `YOUR_APP_REDIRECT_URI` are parameters that you get when [register](https://sp-money.yandex.ru/myservices/new.xml) your app in Yandex.Money API.
+`YOUR_APP_CLIENT_ID` and `YOUR_APP_REDIRECT_URI` are parameters that you get when
+ [register](https://sp-money.yandex.ru/myservices/new.xml) your app in Yandex.Money API.
 
 Then Yandex.Money redirect user back to your app. At this redirect uri we should change temporary code parameter from
 GET redirect request. This is even more simple.
@@ -73,22 +75,22 @@ Rest of requests you can use the same way. After this example we won't show you 
 #### Operation history and details
 
 ```php
-$resp = $ym->operationHistory($token, 0, 5); 
+$resp = $ym->operationHistory($token, 0, 5);
 // second param is first record record from set, third param is record count
 
-$resp = $ym->operationDetail($token, $requestId); 
+$resp = $ym->operationDetail($token, $requestId);
 // second param is requestId from payment method or one from operation hisory
 ```
 
 #### p2p transfer
 
 ```php
-$resp = $ym->requestPaymentP2P($token, "410011161616877", "0.02", 
+$resp = $ym->requestPaymentP2P($token, "410011161616877", "0.02",
         "comment to sender", "message to recepient");
 
 $requestId = $resp->getRequestId();
 // payment by user's Yandex.Money wallet
-$resp = $ym->processPaymentByWallet($token, $requestId); 
+$resp = $ym->processPaymentByWallet($token, $requestId);
 ```
 
 #### Payment to shop by credit card
@@ -108,7 +110,8 @@ $resp = $ym->processPaymentByCard($token, $requestId, "375"); // third param is 
 
 #### Logs
 
-We recommend you to log request to Yandex.Money system. It's easy, you should only set log file name and path relatively to your current script.
+We recommend you to log request to Yandex.Money system.
+It's easy, you should only set log file name and path relatively to your current script.
 
 Notice that if you want to log details of responses you should do it yourself.
 

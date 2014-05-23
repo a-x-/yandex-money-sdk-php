@@ -7,27 +7,27 @@ use YandexMoney\Exception as Exceptions;
 use YandexMoney\Response as Responses;
 
 /**
- * 
+ *
  */
 class Client
 {
     /**
-     * 
+     *
      */
     const VERSION = '1.3.0';
 
     /**
-     * 
+     *
      */
     const URI_API = 'https://money.yandex.ru/api';
 
     /**
-     * 
+     *
      */
     const URI_AUTH = 'https://sp-money.yandex.ru/oauth/authorize';
 
     /**
-     * 
+     *
      */
     const URI_TOKEN = 'https://sp-money.yandex.ru/oauth/token';
 
@@ -63,9 +63,10 @@ class Client
     /**
      * @param string $clientId
      * @param string $redirectUri
-     * @param string $scope=
+     * @param string $scope =
+     * @return string
      */
-    public static function authorizeUri($clientId, $redirectUri, $scope = null)
+    public static function makeAuthorizeUri($clientId, $redirectUri, $scope = null)
     {
         self::_validateClientId($clientId);
 
@@ -220,7 +221,7 @@ class Client
      * @param string $requestId
      * @return \YandexMoney\Response\ProcessPaymentResponse
      */
-    public function processPaymentByWallet($accessToken, $requestId) 
+    public function processPaymentByWallet($accessToken, $requestId)
     {
         $paramArray['request_id'] = $requestId;
         $paramArray['money_source'] = 'wallet';
@@ -263,7 +264,7 @@ class Client
 
         $requestor = new ApiRequestor($accessToken, $this->logFile);
         $resp = $requestor->request(self::URI_API . '/process-payment', $params);
-        
+
         return new Responses\ProcessPaymentResponse($resp);
     }
 

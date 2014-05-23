@@ -22,7 +22,7 @@ if (!isset($code)) { // If we are just begginig OAuth
         "payment.to-account(\"410011161616877\",\"account\").limit(30,10) " .
         "payment.to-pattern(\"337\").limit(30,10) " .
         "money-source(\"wallet\",\"card\") ";
-    $authUri = Client::authorizeUri(CLIENT_ID, REDIRECT_URI, $scope);
+    $authUri = Client::makeAuthorizeUri(CLIENT_ID, REDIRECT_URI, $scope);
     header('Location: ' . $authUri);
 
 } else { // when we recieved a temporary code on redirect
@@ -86,11 +86,11 @@ if (!isset($code)) { // If we are just begginig OAuth
                 print "Error: " . $resp->getError();
                 die();
             }
-            print "</p>";    
+            print "</p>";
         } else {
             print "<p>You have no any history records at your account to request details.</p>";
         }
-        
+
 
         $resp = $ym->requestPaymentP2P($token, "410011161616877", "0.02");
         print "<p class=\"output\">";
