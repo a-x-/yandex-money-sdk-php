@@ -5,19 +5,19 @@ namespace YandexMoney;
 use YandexMoney\Exception as Exceptions;
 
 /**
- * 
+ *
  */
-class ApiRequestor 
+class ApiRequestor
 {
     /**
-     * 
+     *
      */
     const USER_AGENT = 'yandex-money-sdk-php';
 
     /**
-     * 
+     *
      */
-    const CERTIFICATE_PATH = '/../data/ca-certificate.crt';
+    const CERTIFICATE_PATH = '/../_data/ca-certificate.crt';
 
     /**
      * @var string
@@ -73,22 +73,22 @@ class ApiRequestor
         curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . self::CERTIFICATE_PATH);
-                                    
-        $this->_log($this->_makeRequestLogMessage($uri, $params));  
+
+        $this->_log($this->_makeRequestLogMessage($uri, $params));
 
         $rbody = curl_exec($curl);
-        
+
         $errno = curl_errno($curl);
         $error = curl_error($curl);
         $rcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);        
-        
+        curl_close($curl);
+
         $this->_log($this->_makeResponseLogMessage($uri, $params, $rcode, $errno, $error));
 
-        if ($rbody === false) {                
+        if ($rbody === false) {
             $this->_handleCurlError($errno, $error);
         }
-        
+
         return array($rbody, $rcode);
     }
 
@@ -96,7 +96,7 @@ class ApiRequestor
      * @param string $rbody
      * @param int $rcode
      * @return array $response
-     * 
+     *
      * @throws \YandexMoney\Exception\ApiException
      */
     private function _interpretResponse($rbody, $rcode, $expectResponseBody)
@@ -106,10 +106,10 @@ class ApiRequestor
         }
 
         try {
-            $resp = json_decode($rbody, true);            
+            $resp = json_decode($rbody, true);
         } catch (Exception $e) {
             throw new Exceptions\ApiException("Invalid response body from API: $rbody (HTTP response code was $rcode)", $rcode, $rbody);
-        }    
+        }
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new YM_ApiError("Json parsing error with json_last_error code = " . json_last_error(), $rcode, $rbody);
@@ -118,14 +118,14 @@ class ApiRequestor
         if ($resp === null && $expectResponseBody) {
             throw new Exceptions\ApiException("Server response body is null: $rbody (HTTP response code was $rcode)", $rcode, $rbody);
         }
-        
+
         return $resp;
     }
 
     /**
      * @param int $errno
      * @param string $message
-     * 
+     *
      * @throws \YandexMoney\Exception\ApiConnectionException
      */
     private function _handleCurlError($errno, $message)
@@ -153,7 +153,7 @@ class ApiRequestor
      * @param string $rbody
      * @param string $rcode
      * @param string $resp
-     * 
+     *
      * @throws \YandexMoney\Exception\ApiException
      * @throws \YandexMoney\Exception\InvalidTokenException
      * @throws \YandexMoney\Exception\InsufficientScopeException
@@ -181,7 +181,7 @@ class ApiRequestor
 
     /**
      * @param string $message
-     * 
+     *
      * @throws \YandexMoney\Exception\Exception
      */
     private function _log($message)
@@ -196,24 +196,24 @@ class ApiRequestor
                     throw new Exceptions\Exception("log file $f is not writable");
                 }
             }
-                
+
             if (!$handle = fopen($f, 'a')) {
                 throw new Exceptions\Exception("couldn't open log file $f for appending");
             }
-            
+
             $time = '[' . date("Y-m-d H:i:s") . '] ';
             if (fwrite($handle, $time . $message . "\r\n") === false) {
-                throw new Exceptions\Exception("couldn't fwrite message log to $f"); 
+                throw new Exceptions\Exception("couldn't fwrite message log to $f");
             }
-            
-            fclose($handle);                                
+
+            fclose($handle);
         }
     }
 
     /**
      * @param string $uri
      * @param string $params
-     * 
+     *
      * @return string
      */
     private function _makeRequestLogMessage($uri, $params)
@@ -222,22 +222,22 @@ class ApiRequestor
             return '';
         }
 
-        $m = "request: " . $uri . '; ';        
+        $m = "request: " . $uri . '; ';
 
         $token = $this->accessToken;
         if (isset($token)) {
             $m = $m . 'token = *' . substr($token, -4) . '; ';
         }
 
-        parse_str($params);        
+        parse_str($params);
         if (isset($to)) {
             $m = $m . 'param to = *' . substr($to, -4) . '; ';
         }
-        
+
         if (isset($pattern_id)) {
             $m = $m . 'param pattern_id = ' . $pattern_id . '; ';
         }
-        
+
         if (isset($request_id)) {
             $m = $m . 'param request_id = *' . substr($request_id, -4) . '; ';
         }
@@ -251,11 +251,11 @@ class ApiRequestor
      * @param int $code
      * @param int $errno
      * @param string $error
-     * 
+     *
      * @return string
      */
     private function _makeResponseLogMessage($uri, $params, $code, $errno, $error)
-    { 
+    {
         if ($this->logFile === null) {
             return '';
         }
