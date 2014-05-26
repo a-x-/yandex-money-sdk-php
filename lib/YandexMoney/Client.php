@@ -226,12 +226,7 @@ class Client
     {
         $paramArray['request_id'] = $requestId;
         $paramArray['money_source'] = 'wallet';
-        $params = http_build_query($paramArray);
-
-        $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp = $requestor->request(self::URI_API . '/process-payment', $params);
-
-        return new Responses\ProcessPaymentResponse($resp);
+        return $this->_processPayment($accessToken, $paramArray);
     }
 
     /**
@@ -261,12 +256,7 @@ class Client
         $paramArray['request_id'] = $requestId;
         $paramArray['money_source'] = 'card';
         $paramArray['csc'] = $csc;
-        $params = http_build_query($paramArray);
-
-        $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp = $requestor->request(self::URI_API . '/process-payment', $params);
-
-        return new Responses\ProcessPaymentResponse($resp);
+        $this->_processPayment($accessToken,$paramArray);
     }
 
     /**
@@ -278,5 +268,20 @@ class Client
         if (($clientId == null) || ($clientId === '')) {
             throw new Exceptions\Exception('You must pass a valid application client_id');
         }
+    }
+
+    /**
+     * @param $accessToken
+     * @param $paramArray
+     * @return Response\ProcessPaymentResponse
+     */
+    private function _processPayment($accessToken, $paramArray)
+    {
+        $params = http_build_query($paramArray);
+
+        $requestor = new ApiRequestor($accessToken, $this->logFile);
+        $resp = $requestor->request(self::URI_API . '/process-payment', $params);
+
+        return new Responses\ProcessPaymentResponse($resp);
     }
 }
