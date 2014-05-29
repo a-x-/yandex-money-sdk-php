@@ -1,6 +1,0 @@
-<?php
-
-define ('CLIENT_ID', 'YOUR_APP_CLIENT_ID');
-define ('REDIRECT_URI', 'YOUR_APP_REDIRECT_URI');
-define ('CLIENT_SECRET', 'YOUR_APP_CLIENT_SECRET');
-
