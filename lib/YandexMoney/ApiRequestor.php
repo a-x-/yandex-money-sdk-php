@@ -3,6 +3,7 @@
 namespace YandexMoney;
 
 use YandexMoney\Exception as Exceptions;
+require_once "$_SERVER[DOCUMENT_ROOT]/vendor/a-x-/invntrm-common-php/common.php";
 
 /**
  *
@@ -17,7 +18,7 @@ class ApiRequestor
     /**
      *
      */
-    const CERTIFICATE_PATH = '/../_data/ca-certificate.crt';
+    const CERTIFICATE_PATH = '/../data/ca-certificate.crt';
 
     /**
      * @var string
@@ -42,6 +43,7 @@ class ApiRequestor
     /**
      * @param string $uri
      * @param string $params
+     * @param bool $expectResponseBody
      * @return array
      */
     public function request($uri, $params = null, $expectResponseBody = true)
@@ -73,7 +75,6 @@ class ApiRequestor
         curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . self::CERTIFICATE_PATH);
-
         $this->_log($this->_makeRequestLogMessage($uri, $params));
 
         $rbody = curl_exec($curl);
@@ -95,9 +96,11 @@ class ApiRequestor
     /**
      * @param string $rbody
      * @param int $rcode
+     * @param $expectResponseBody
+     * @throws YM_ApiError
+     * @throws Exception\ApiException
      * @return array $response
      *
-     * @throws \YandexMoney\Exception\ApiException
      */
     private function _interpretResponse($rbody, $rcode, $expectResponseBody)
     {
