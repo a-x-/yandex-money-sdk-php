@@ -3,7 +3,7 @@
 namespace YandexMoney\Response;
 
 /**
- * 
+ *
  */
 class AccountInfoResponse implements ResponseInterface
 {
@@ -11,7 +11,7 @@ class AccountInfoResponse implements ResponseInterface
      * @var string
      */
     protected $account;
-    
+
     /**
      * @var string
      */
@@ -47,7 +47,7 @@ class AccountInfoResponse implements ResponseInterface
             $this->currency = $accountInfo['currency'];
         }
         if (isset($accountInfo['identified'])) {
-            $this->identified = (bool) $accountInfo['identified'];
+            $this->identified = (bool)$accountInfo['identified'];
         }
         if (isset($accountInfo['account_type'])) {
             $this->accountType = $accountInfo['account_type'];

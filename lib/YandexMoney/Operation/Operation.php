@@ -3,7 +3,7 @@
 namespace YandexMoney\Operation;
 
 /**
- * 
+ *
  */
 class Operation
 {
@@ -124,11 +124,11 @@ class Operation
     {
         return $this->title;
     }
-    
+
     /**
      * @return string возвращает статус платежа (перевода).
      */
-    public function getStatus() 
+    public function getStatus()
     {
         return $this->status;
     }

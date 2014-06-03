@@ -5,7 +5,7 @@ namespace YandexMoney\Response;
 use YandexMoney\Operation\OperationDetail;
 
 /**
- * 
+ *
  */
 class OperationHistoryResponse implements ResponseInterface
 {
@@ -18,7 +18,7 @@ class OperationHistoryResponse implements ResponseInterface
      * @param int
      */
     protected $nextRecord;
-    
+
     /**
      * @var array
      */
@@ -56,7 +56,7 @@ class OperationHistoryResponse implements ResponseInterface
      * illegal_param_records ― неверное значение параметра records;
      * Все прочие значения: техническая ошибка, повторите вызов операции позднее.
      */
-    public function getError() 
+    public function getError()
     {
         return $this->error;
     }

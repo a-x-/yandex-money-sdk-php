@@ -3,13 +3,13 @@
 namespace YandexMoney\Exception;
 
 /**
- * 
+ *
  */
 class Exception extends \Exception
 {
     /**
      * @param string $message
-     * @param int $httpStatus
+     * @param int    $httpStatus
      * @param string $httpBody
      * @param string $jsonBody
      */
@@ -18,8 +18,8 @@ class Exception extends \Exception
         parent::__construct($message);
 
         $this->httpStatus = $httpStatus;
-        $this->httpBody = $httpBody;
-        $this->jsonBody = $jsonBody;
+        $this->httpBody   = $httpBody;
+        $this->jsonBody   = $jsonBody;
     }
 
     /**

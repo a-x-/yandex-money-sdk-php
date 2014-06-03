@@ -3,7 +3,7 @@
 namespace YandexMoney\Response;
 
 /**
- * 
+ *
  */
 class ReceiveTokenResponse implements ResponseInterface
 {
@@ -23,7 +23,7 @@ class ReceiveTokenResponse implements ResponseInterface
     public function __construct(array $response)
     {
         if (isset($response['access_token'])) {
-            $this->accessToken = $response['access_token'] ;
+            $this->accessToken = $response['access_token'];
         }
 
         if (isset($response['error'])) {

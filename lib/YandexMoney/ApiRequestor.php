@@ -3,6 +3,7 @@
 namespace YandexMoney;
 
 use YandexMoney\Exception as Exceptions;
+
 require_once "$_SERVER[DOCUMENT_ROOT]/vendor/a-x-/invntrm-common-php/common.php";
 
 /**
@@ -37,13 +38,14 @@ class ApiRequestor
     public function __construct($accessToken = null, $logFile = null)
     {
         $this->accessToken = $accessToken;
-        $this->logFile = $logFile;
+        $this->logFile     = $logFile;
     }
 
     /**
      * @param string $uri
      * @param string $params
-     * @param bool $expectResponseBody
+     * @param bool   $expectResponseBody
+     *
      * @return array
      */
     public function request($uri, $params = null, $expectResponseBody = true)
@@ -55,6 +57,7 @@ class ApiRequestor
     /**
      * @param string $uri
      * @param string $params
+     *
      * @return array
      */
     private function _curlRequest($uri, $params)
@@ -95,8 +98,9 @@ class ApiRequestor
 
     /**
      * @param string $rbody
-     * @param int $rcode
-     * @param $expectResponseBody
+     * @param int    $rcode
+     * @param        $expectResponseBody
+     *
      * @throws YM_ApiError
      * @throws Exception\ApiException
      * @return array $response
@@ -126,7 +130,7 @@ class ApiRequestor
     }
 
     /**
-     * @param int $errno
+     * @param int    $errno
      * @param string $message
      *
      * @throws \YandexMoney\Exception\ApiConnectionException
@@ -251,8 +255,8 @@ class ApiRequestor
     /**
      * @param string $uri
      * @param string $params
-     * @param int $code
-     * @param int $errno
+     * @param int    $code
+     * @param int    $errno
      * @param string $error
      *
      * @return string

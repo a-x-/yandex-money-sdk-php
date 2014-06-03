@@ -5,7 +5,7 @@ namespace YandexMoney\Operation;
 use YandexMoney\Response\ResponseInterface;
 
 /**
- * 
+ *
  */
 class OperationDetail extends Operation implements ResponseInterface
 {

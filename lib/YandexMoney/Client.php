@@ -76,9 +76,8 @@ class Client
         }
         $scope = trim(strtolower($scope));
 
-        $res = self::URI_AUTH . "?client_id=$clientId&response_type=code&scope=" .
-            urlencode($scope) . "&redirect_uri=" . urlencode($redirectUri);
-
+        $res = self::URI_AUTH . "?client_id=$clientId&response_type=code&"
+            . http_build_query(['scope' => $scope, 'redirect_uri' => $redirectUri]);
         return $res;
     }
 

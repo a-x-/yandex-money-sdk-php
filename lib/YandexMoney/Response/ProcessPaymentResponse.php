@@ -3,7 +3,7 @@
 namespace YandexMoney\Response;
 
 /**
- * 
+ *
  */
 class ProcessPaymentResponse implements ResponseInterface
 {
