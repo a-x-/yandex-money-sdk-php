@@ -2,8 +2,8 @@
 
 namespace YandexMoney;
 
-use YandexMoney\Operation\OperationDetail;
 use YandexMoney\Exception as Exceptions;
+use YandexMoney\Operation\OperationDetail;
 use YandexMoney\Response as Responses;
 
 /**
@@ -47,9 +47,9 @@ class Client
      */
     public function __construct($clientId, $logFile = null)
     {
-        self::_validateClientId($clientId);
+        self::validateClientId($clientId);
         $this->clientId = $clientId;
-        $this->logFile = $logFile;
+        $this->logFile  = $logFile;
     }
 
     /**
@@ -64,11 +64,12 @@ class Client
      * @param string $clientId
      * @param string $redirectUri
      * @param string $scope =
+     *
      * @return string
      */
     public static function makeAuthorizeUri($clientId, $redirectUri, $scope = null)
     {
-        self::_validateClientId($clientId);
+        self::validateClientId($clientId);
 
         if (!isset($scope) || $scope === '') {
             $scope = 'account-info operation-history';
@@ -76,7 +77,7 @@ class Client
         $scope = trim(strtolower($scope));
 
         $res = self::URI_AUTH . "?client_id=$clientId&response_type=code&scope=" .
-                urlencode($scope) . "&redirect_uri=" . urlencode($redirectUri);
+            urlencode($scope) . "&redirect_uri=" . urlencode($redirectUri);
 
         return $res;
     }
@@ -85,13 +86,14 @@ class Client
      * @param string $code
      * @param string $redirectUri
      * @param string $clientSecret
+     *
      * @return \YandexMoney\Response\ReceiveTokenResponse
      */
     public function receiveOAuthToken($code, $redirectUri, $clientSecret = null)
     {
-        $paramArray['grant_type'] = 'authorization_code';
-        $paramArray['client_id'] = $this->clientId;
-        $paramArray['code'] = $code;
+        $paramArray['grant_type']   = 'authorization_code';
+        $paramArray['client_id']    = $this->clientId;
+        $paramArray['code']         = $code;
         $paramArray['redirect_uri'] = $redirectUri;
         if (isset($clientSecret)) {
             $paramArray['client_secret'] = $clientSecret;
@@ -99,13 +101,14 @@ class Client
         $params = http_build_query($paramArray);
 
         $requestor = new ApiRequestor();
-        $resp = $requestor->request(self::URI_TOKEN, $params);
+        $resp      = $requestor->request(self::URI_TOKEN, $params);
 
         return new Responses\ReceiveTokenResponse($resp);
     }
 
     /**
      * @param string $accessToken
+     *
      * @return boolean
      */
     public function revokeOAuthToken($accessToken)
@@ -118,21 +121,27 @@ class Client
 
     /**
      * @param string $accessToken
+     *
      * @return \YandexMoney\Response\AccountInfoResponse
      */
     public function accountInfo($accessToken)
     {
         $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp = $requestor->request(self::URI_API . '/account-info');
+        $resp      = $requestor->request(self::URI_API . '/account-info');
 
         return new Responses\AccountInfoResponse($resp);
     }
 
     /**
      * @param string $accessToken
-     * @param int $startRecord
-     * @param int $records
+     * @param int    $startRecord
+     * @param int    $records
      * @param string $type
+     * @param null   $from
+     * @param null   $till
+     * @param null   $label
+     * @param null   $details
+     *
      * @return \YandexMoney\Response\OperationHistoryResponse
      */
     public function operationHistory($accessToken, $startRecord = null, $records = null, $type = null, $from = null,
@@ -172,7 +181,7 @@ class Client
         }
 
         $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp = $requestor->request(self::URI_API . '/operation-history', $params);
+        $resp      = $requestor->request(self::URI_API . '/operation-history', $params);
 
         return new Responses\OperationHistoryResponse($resp);
     }
@@ -180,90 +189,96 @@ class Client
     /**
      * @param string $accessToken
      * @param string $operationId
+     *
+     * @return \YandexMoney\Operation\OperationDetail
      */
     public function operationDetail($accessToken, $operationId)
     {
         $paramArray['operation_id'] = $operationId;
-        $params = http_build_query($paramArray);
+        $params                     = http_build_query($paramArray);
 
         $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp = $requestor->request(self::URI_API . '/operation-details', $params);
+        $resp      = $requestor->request(self::URI_API . '/operation-details', $params);
 
         return new OperationDetail($resp);
     }
 
     /**
-     * @param string $accessToken
-     * @param string $to
-     * @param float $amount
-     * @param string $comment - Комментарий к переводу, отображается в истории отправителя.
-     * @param string $message - Комментарий к переводу, отображается получателю.
+     * @param string      $accessToken
+     * @param string      $to
+     * @param float       $amount
+     * @param string      $comment      - Комментарий к переводу, отображается в истории отправителя.
+     * @param string      $message      - Комментарий к переводу, отображается в истории получателя.
      * @param string|null $label
+     * @param bool|array  $test_payment - false или например ['test_card'=>'available','test_result'=>'success']
+     *                                  test_card может быте не указано
+     *                                  test_result обзательно и может  также приниматть значение кода ошибки из таблицы
+     *                                  http://api.yandex.ru/money/doc/dg/reference/request-payment.xml#errors_table
+     *
      * @return \YandexMoney\Response\RequestPaymentResponse
      */
-    public function requestPaymentP2P($accessToken, $to, $amount, $comment = null, $message = null, $label = null)
+    public function requestPaymentP2P($accessToken, $to, $amount, $comment = null, $message = null, $label = null, $test_payment = false)
     {
-        $paramArray['pattern_id'] = 'p2p';
-        $paramArray['to'] = $to;
-        $paramArray['amount'] = $amount;
-        $paramArray['comment'] = $comment;
-        $paramArray['message'] = $message;
-        $paramArray['label'] = $label;
-        $params = http_build_query($paramArray);
-
-        $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp = $requestor->request(self::URI_API . '/request-payment', $params);
-
-        return new Responses\RequestPaymentResponse($resp);
+        $params = [
+            'pattern_id'   => 'p2p',
+            'to'           => $to,
+            'amount'       => $amount,
+            'comment'      => $comment,
+            'message'      => $message,
+            'label'        => $label,
+            'test_payment' => $test_payment
+        ];
+        $params = $this->addTestPaymentFlag($test_payment, $params);
+        return $this->stagePayment($accessToken, $params, 'request');
     }
 
     /**
-     * @param string $accessToken
-     * @param string $requestId
+     * @param string     $accessToken
+     * @param string     $requestId
+     * @param bool|array $test_payment
+     *
      * @return \YandexMoney\Response\ProcessPaymentResponse
      */
-    public function processPaymentByWallet($accessToken, $requestId)
+    public function processPaymentByWallet($accessToken, $requestId, $test_payment)
     {
-        $paramArray['request_id'] = $requestId;
-        $paramArray['money_source'] = 'wallet';
-        return $this->_processPayment($accessToken, $paramArray);
+        $params = ['request_id' => $requestId, 'money_source' => 'wallet'];
+        $params = $this->addTestPaymentFlag($test_payment, $params);
+        return $this->stagePayment($accessToken, $params, 'process');
     }
 
     /**
      * @param string $accessToken
      * @param string $shopParams
+     *
      * @return \YandexMoney\Response\RequestPaymentResponse
      */
     public function requestPaymentShop($accessToken, $shopParams)
     {
-        $params = http_build_query($shopParams);
-
-        $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp = $requestor->request(self::URI_API . '/request-payment', $params);
-
-        return new Response\RequestPaymentResponse($resp);
+        return $this->stagePayment($accessToken, [$shopParams], 'request');
     }
 
 
     /**
-     * @param string $accessToken
-     * @param string $requestId
-     * @param string $csc
+     * @param string     $accessToken
+     * @param string     $requestId
+     * @param string     $csc
+     * @param bool|array $test_payment
+     *
      * @return \YandexMoney\Response\ProcessPaymentResponse
      */
-    public function processPaymentByCard($accessToken, $requestId, $csc)
+    public function processPaymentByCard($accessToken, $requestId, $csc, $test_payment)
     {
-        $paramArray['request_id'] = $requestId;
-        $paramArray['money_source'] = 'card';
-        $paramArray['csc'] = $csc;
-        $this->_processPayment($accessToken,$paramArray);
+        $params = ['request_id' => $requestId, 'money_source' => 'card', 'csc' => $csc];
+        $params = $this->addTestPaymentFlag($test_payment, $params);
+        return $this->stagePayment($accessToken, $params, 'process');
     }
 
     /**
      * @param string $clientId
+     *
      * @throws \YandexMoney\Exception\Exception
      */
-    private static function _validateClientId($clientId)
+    private static function validateClientId($clientId)
     {
         if (($clientId == null) || ($clientId === '')) {
             throw new Exceptions\Exception('You must pass a valid application client_id');
@@ -273,15 +288,32 @@ class Client
     /**
      * @param $accessToken
      * @param $paramArray
-     * @return Response\ProcessPaymentResponse
+     * @param $stageName
+     *
+     * @return Response\ProcessPaymentResponse|Responses\RequestPaymentResponse
      */
-    private function _processPayment($accessToken, $paramArray)
+    private function stagePayment($accessToken, $paramArray, $stageName)
     {
+        \Invntrm\_d($paramArray);
         $params = http_build_query($paramArray);
-
+        \Invntrm\_d($params);
         $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp = $requestor->request(self::URI_API . '/process-payment', $params);
+        $resp      = $requestor->request(self::URI_API . "/$stageName-payment", $params);
 
-        return new Responses\ProcessPaymentResponse($resp);
+        return ($stageName == 'request') ?
+            new Responses\RequestPaymentResponse($resp) :
+            new Responses\ProcessPaymentResponse($resp);
+    }
+
+    private function addTestPaymentFlag($test_payment, $params)
+    {
+        if (is_array($test_payment) || $test_payment === true) {
+            $test_payment_params = is_array($test_payment) ? $test_payment : [];
+            if ($test_payment === true) $test_payment_params['test_result'] = 'success';
+            $test_payment_params['test_payment'] = 'true';
+            $params                              = array_merge($params, $test_payment_params);
+        }
+        return $params;
     }
 }
+

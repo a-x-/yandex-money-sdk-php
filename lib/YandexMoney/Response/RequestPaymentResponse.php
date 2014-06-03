@@ -3,7 +3,7 @@
 namespace YandexMoney\Response;
 
 /**
- * 
+ *
  */
 class RequestPaymentResponse implements ResponseInterface
 {
@@ -38,7 +38,7 @@ class RequestPaymentResponse implements ResponseInterface
     protected $balance;
 
     /**
-     * @param array $responseArray
+     * @param array $response
      */
     public function __construct(array $response)
     {
