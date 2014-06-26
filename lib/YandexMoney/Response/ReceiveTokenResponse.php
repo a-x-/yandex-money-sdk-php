@@ -32,6 +32,7 @@ class ReceiveTokenResponse implements ResponseInterface
     }
 
     /**
+     * Get error description
      * @return string
      */
     public function getAccessToken()
