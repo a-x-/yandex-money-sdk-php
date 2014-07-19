@@ -1,14 +1,18 @@
 {
-    "name": "yandex-money/yandex-money-sdk-php",
+    "name": "a-x-/yandex-money-sdk-php",
     "description": "Yandex.Money API SDK for PHP",
     "keywords": ["yandex", "money", "php", "sdk", "payment", "yandex.money"],
     "type": "library",
-    "homepage": "https://github.com/yandex-money/yandex-money-sdk-php",
+    "homepage": "https://github.com/a-x-/yandex-money-sdk-php",
     "license": "MIT",
     "authors": [
         {
             "name": "Yandex.Money",
             "homepage": "https://github.com/yandex-money/yandex-money-sdk-php/graphs/contributors"
+        },
+        {
+            "name":"a-x-",
+            "email":"me@invntrm.ru"
         }
     ],
 

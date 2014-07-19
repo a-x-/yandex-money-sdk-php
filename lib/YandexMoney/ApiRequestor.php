@@ -4,7 +4,7 @@ namespace YandexMoney;
 
 use YandexMoney\Exception as Exceptions;
 
-require_once "$_SERVER[DOCUMENT_ROOT]/vendor/a-x-/invntrm-common-php/common.php";
+require_once "$_SERVER[DOCUMENT_ROOT]/vendor/a-x-/backend/common.php";
 
 /**
  *

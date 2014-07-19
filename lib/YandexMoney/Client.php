@@ -102,105 +102,96 @@ class Client
         $requestor = new ApiRequestor();
         $resp      = $requestor->request(self::URI_TOKEN, $params);
 
-        return new Responses\ReceiveTokenResponse($resp);
+        $responceObjectHelper = new Responses\ReceiveTokenResponse($resp);
+        if(!$responceObjectHelper->isSuccess()) throw new ExceptionExtended($responceObjectHelper->getError());
+        return $responceObjectHelper;
     }
 
-    /**
-     * @param string $accessToken
-     *
-     * @return boolean
-     */
-    public function revokeOAuthToken($accessToken)
-    {
-        $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $requestor->request(self::URI_API . '/revoke');
+//    /**
+//     * @param string $accessToken
+//     *
+//     * @return boolean
+//     */
+//    public function revokeOAuthToken($accessToken)
+//    {
+//        $requestor = new ApiRequestor($accessToken, $this->logFile);
+//        $requestor->request(self::URI_API . '/revoke');
+//        return true;
+//    }
 
-        return true;
-    }
+//    /**
+//     * @param string $accessToken
+//     *
+//     * @return \YandexMoney\Response\AccountInfoResponse
+//     */
+//    public function accountInfo($accessToken)
+//    {
+//        $requestor = new ApiRequestor($accessToken, $this->logFile);
+//        $resp      = $requestor->request(self::URI_API . '/account-info');
+//        return new Responses\AccountInfoResponse($resp);
+//    }
 
-    /**
-     * @param string $accessToken
-     *
-     * @return \YandexMoney\Response\AccountInfoResponse
-     */
-    public function accountInfo($accessToken)
-    {
-        $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp      = $requestor->request(self::URI_API . '/account-info');
+//    /**
+//     * @param string $accessToken
+//     * @param int    $startRecord
+//     * @param int    $records
+//     * @param string $type
+//     * @param null   $from
+//     * @param null   $till
+//     * @param null   $label
+//     * @param null   $details
+//     *
+//     * @return \YandexMoney\Response\OperationHistoryResponse
+//     */
+//    public function operationHistory($accessToken, $startRecord = null, $records = null, $type = null, $from = null,
+//                                     $till = null, $label = null, $details = null)
+//    {
+//        $paramArray = array();
+//        if (isset($type)) {
+//            $paramArray['type'] = $type;
+//        }
+//        if (isset($startRecord)) {
+//            $paramArray['start_record'] = $startRecord;
+//        }
+//        if (isset($records)) {
+//            $paramArray['records'] = $records;
+//        }
+//        if (isset($label)) {
+//            $paramArray['label'] = $label;
+//        }
+//        if (isset($from)) {
+//            $paramArray['from'] = $from;
+//        }
+//        if (isset($till)) {
+//            $paramArray['till'] = $till;
+//        }
+//        if (isset($details)) {
+//            $paramArray['details'] = $details;
+//        }
+//        if (count($paramArray) > 0) {
+//            $params = http_build_query($paramArray);
+//        } else {
+//            $params = '';
+//        }
+//        $requestor = new ApiRequestor($accessToken, $this->logFile);
+//        $resp      = $requestor->request(self::URI_API . '/operation-history', $params);
+//        return new Responses\OperationHistoryResponse($resp);
+//    }
 
-        return new Responses\AccountInfoResponse($resp);
-    }
-
-    /**
-     * @param string $accessToken
-     * @param int    $startRecord
-     * @param int    $records
-     * @param string $type
-     * @param null   $from
-     * @param null   $till
-     * @param null   $label
-     * @param null   $details
-     *
-     * @return \YandexMoney\Response\OperationHistoryResponse
-     */
-    public function operationHistory($accessToken, $startRecord = null, $records = null, $type = null, $from = null,
-                                     $till = null, $label = null, $details = null)
-    {
-        $paramArray = array();
-        if (isset($type)) {
-            $paramArray['type'] = $type;
-        }
-        if (isset($startRecord)) {
-            $paramArray['start_record'] = $startRecord;
-        }
-        if (isset($records)) {
-            $paramArray['records'] = $records;
-        }
-
-        if (isset($label)) {
-            $paramArray['label'] = $label;
-        }
-
-        if (isset($from)) {
-            $paramArray['from'] = $from;
-        }
-
-        if (isset($till)) {
-            $paramArray['till'] = $till;
-        }
-
-        if (isset($details)) {
-            $paramArray['details'] = $details;
-        }
-
-        if (count($paramArray) > 0) {
-            $params = http_build_query($paramArray);
-        } else {
-            $params = '';
-        }
-
-        $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp      = $requestor->request(self::URI_API . '/operation-history', $params);
-
-        return new Responses\OperationHistoryResponse($resp);
-    }
-
-    /**
-     * @param string $accessToken
-     * @param string $operationId
-     *
-     * @return \YandexMoney\Operation\OperationDetail
-     */
-    public function operationDetail($accessToken, $operationId)
-    {
-        $paramArray['operation_id'] = $operationId;
-        $params                     = http_build_query($paramArray);
-
-        $requestor = new ApiRequestor($accessToken, $this->logFile);
-        $resp      = $requestor->request(self::URI_API . '/operation-details', $params);
-
-        return new OperationDetail($resp);
-    }
+//    /**
+//     * @param string $accessToken
+//     * @param string $operationId
+//     *
+//     * @return \YandexMoney\Operation\OperationDetail
+//     */
+//    public function operationDetail($accessToken, $operationId)
+//    {
+//        $paramArray['operation_id'] = $operationId;
+//        $params                     = http_build_query($paramArray);
+//        $requestor = new ApiRequestor($accessToken, $this->logFile);
+//        $resp      = $requestor->request(self::URI_API . '/operation-details', $params);
+//        return new OperationDetail($resp);
+//    }
 
     /**
      * @param string      $accessToken
@@ -279,7 +270,7 @@ class Client
      */
     private static function validateClientId($clientId)
     {
-        if (($clientId == null) || ($clientId === '')) {
+        if (empty($clientId)) {
             throw new Exceptions\Exception('You must pass a valid application client_id');
         }
     }
@@ -293,15 +284,17 @@ class Client
      */
     private function stagePayment($accessToken, $paramArray, $stageName)
     {
-        \Invntrm\_d($paramArray);
+        if(IS_DEBUG_ALX) \Invntrm\_d($paramArray);
         $params = http_build_query($paramArray);
-        \Invntrm\_d($params);
+        if(IS_DEBUG_ALX) \Invntrm\_d($params);
         $requestor = new ApiRequestor($accessToken, $this->logFile);
         $resp      = $requestor->request(self::URI_API . "/$stageName-payment", $params);
 
-        return ($stageName == 'request') ?
+        $responceObjectHelper =  ($stageName == 'request') ?
             new Responses\RequestPaymentResponse($resp) :
             new Responses\ProcessPaymentResponse($resp);
+        if(!$responceObjectHelper->isSuccess()) throw new ExceptionExtended($responceObjectHelper->getStatus(), $responceObjectHelper->getError());
+        return $responceObjectHelper;
     }
 
     private function addTestPaymentFlag($test_payment, $params)
@@ -316,3 +309,52 @@ class Client
     }
 }
 
+
+class ExceptionExtended extends \Exception {
+    protected $codeExtended;
+
+    /**
+     * @return string
+     */
+    public function getCodeExtended()
+    {
+        return $this->codeExtended;
+    }
+
+    /**
+     * @param string     $codeExtended
+     * @param string     $description
+     * @param \Exception $previous    [optional]
+     * @param \Exception $numericCode [optional]
+     */
+    public function __construct($codeExtended, $description=null, $previous=null, $numericCode=null)
+    {
+        if(!$description) $description = 'нет описания';
+        parent::__construct($description, $numericCode, $previous);
+        $this->codeExtended = \Invntrm\makeErrorCode($codeExtended);
+    }
+}
+
+/**
+ * Class ExceptionUser User not correct action exception
+ * @package YandexMoney
+ */
+class ExceptionUser extends ExceptionExtended {
+
+}
+
+/**
+ * Class ExceptionYandexmoney Yandex Money specified exception
+ * @package YandexMoney
+ */
+class ExceptionYandexmoney extends ExceptionExtended {
+
+}
+
+/**
+ * Class ExceptionApp Application bug exception
+ * @package YandexMoney
+ */
+class ExceptionApp extends ExceptionExtended {
+
+}
