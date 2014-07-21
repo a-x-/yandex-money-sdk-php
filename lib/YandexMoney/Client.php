@@ -293,7 +293,18 @@ class Client
         $responceObjectHelper =  ($stageName == 'request') ?
             new Responses\RequestPaymentResponse($resp) :
             new Responses\ProcessPaymentResponse($resp);
-        if(!$responceObjectHelper->isSuccess()) throw new ExceptionExtended($responceObjectHelper->getStatus(), $responceObjectHelper->getError());
+        if(!$responceObjectHelper->isSuccess())
+            throw new ExceptionExtended(
+                $responceObjectHelper->getError()
+            ,
+                  $responceObjectHelper->getStatus()
+                . ' / '
+                . $responceObjectHelper->getError()
+                . "\n Response Object: "
+                . \Invntrm\varDumpRet($responceObjectHelper)
+                . "\n Input params: "
+                . \Invntrm\varDumpRet($paramArray)
+            );
         return $responceObjectHelper;
     }
 
